@@ -194,7 +194,7 @@ setHistory((prev) => [
   formData.append('pdf', file)
 
   try {
-    const response = await fetch('http://localhost:3001/api/pdf', {
+    const response = await fetch('https://interview-ai-ycc4.onrender.com/api/pdf', {
       method: 'POST',
       body: formData,
     })
