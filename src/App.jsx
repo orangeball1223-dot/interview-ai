@@ -206,7 +206,7 @@ setHistory((prev) => [
       return
     }
 
-    const analyzeResponse = await fetch('http://localhost:3001/api/analyze-profile', {
+    const analyzeResponse = await fetch('https://interview-ai-ycc4.onrender.com/api/analyze-profile', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -327,7 +327,7 @@ alert('PDFの内容をプロフィールに反映しました！')
     formData.append('pdf', file)
 
     try {
-      const response = await fetch('http://localhost:3001/api/pdf', {
+      const response = await fetch('https://interview-ai-ycc4.onrender.com/api/pdf', {
         method: 'POST',
         body: formData,
       })
@@ -339,7 +339,7 @@ alert('PDFの内容をプロフィールに反映しました！')
         return
       }
 
-      const analyzeResponse = await fetch('http://localhost:3001/api/analyze-job', {
+      const analyzeResponse = await fetch('https://interview-ai-ycc4.onrender.com/api/analyze-job', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
