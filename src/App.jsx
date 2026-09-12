@@ -71,7 +71,7 @@ const [history, setHistory] = useState([])
           <h1>🎤 リアルタイム面接AI</h1>
 
           <p style={styles.subTitle}>
-            面接官の質問を聞いて、AIが回答カンペを生成します。
+            面接官の質問を聞いて、AIが回答を生成します。
           </p>
 
           <button
@@ -97,7 +97,7 @@ const [history, setHistory] = useState([])
           </div>
 
           <div style={styles.answerBox}>
-            <h3>🤖 AI回答おすすめ回答</h3>
+            <h3>🤖 AIおすすめ回答</h3>
             <p>{answer || 'ここにAI回答が表示されます。'}</p>
           </div>
 
