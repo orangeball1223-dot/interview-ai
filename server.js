@@ -122,8 +122,8 @@ app.post("/api/analyze-job", async (req, res) => {
     const companyInfo = await askGroq([
       {
         role: "system",
-        content:
-          "あなたは求人票を整理するAIです。求人票の内容から、会社情報、仕事内容、必須条件、歓迎条件、求める人物像、特徴を分かりやすく整理してください。書かれていない内容は推測しないでください。",
+          content:
+  "あなたは求人票を整理するAIです。必ず最初の1行に「企業名：〇〇」と記載してください。その後に、会社情報、仕事内容、必須条件、歓迎条件、求める人物像などを整理してください。",
       },
       {
         role: "user",
@@ -132,10 +132,12 @@ app.post("/api/analyze-job", async (req, res) => {
 ${pdfText}`,
       },
     ])
-
+const companyNameMatch = companyInfo.match(/^企業名[:：]\s*(.+)$/m)
+const companyName = companyNameMatch ? companyNameMatch[1].trim() : ''
     res.json({
-      companyInfo,
-    })
+  companyInfo,
+  companyName,
+})
   } catch (error) {
     console.error(error)
 

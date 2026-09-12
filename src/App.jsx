@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { jsPDF } from 'jspdf'
 
 function App() {
@@ -7,6 +7,7 @@ function App() {
 const [answer, setAnswer] = useState('')
 const [status, setStatus] = useState('待機中')
 const [history, setHistory] = useState([])
+const [profileLoaded, setProfileLoaded] = useState(false)
 
   const [profile, setProfile] = useState({
     career: '',
@@ -17,9 +18,23 @@ const [history, setHistory] = useState([])
     desiredJob: '',
     reason: '',
     company: '',
+    companyName: '',
     companyInfo: '',
     companyUrl: '',
   })
+useEffect(() => {
+  const savedProfile = localStorage.getItem('interviewProfile')
+
+  if (savedProfile) {
+    setProfile(JSON.parse(savedProfile))
+  }
+  setProfileLoaded(true)
+}, [])
+  useEffect(() => {
+  if (!profileLoaded) return
+
+  localStorage.setItem('interviewProfile', JSON.stringify(profile))
+}, [profile, profileLoaded])
 
   const updateProfile = (key, value) => {
     setProfile({
@@ -33,6 +48,16 @@ const [history, setHistory] = useState([])
     <div style={styles.container}>
       <div style={styles.card}>
         <h1>面接の振り返り</h1>
+        {profile.companyName && (
+  <div style={styles.companyCard}>
+    <div style={{ fontSize: "14px", fontWeight: "bold", marginBottom: "8px" }}>
+      🏢 面接実施企業
+    </div>
+    <div style={{ fontSize: "22px", fontWeight: "bold" }}>
+      {profile.companyName}
+    </div>
+  </div>
+)}
 
         {history.length === 0 ? (
           <p>まだ面接履歴がありません。</p>
@@ -48,18 +73,19 @@ const [history, setHistory] = useState([])
           ))
         )}
 
-        <button
-          style={styles.mainButton}
-          onClick={() => setPage('profile')}
-        >
-          <button
+      <button
   style={styles.mainButton}
   onClick={() => window.print()}
 >
   PDFで保存
 </button>
-          プロフィールに戻る
-        </button>
+
+<button
+  style={styles.mainButton}
+  onClick={() => setPage('profile')}
+>
+  プロフィールに戻る
+</button>
       </div>
     </div>
   )
@@ -339,7 +365,7 @@ alert('PDFの内容をプロフィールに反映しました！')
         return
       }
 
-      const analyzeResponse = await fetch('https://interview-ai-ycc4.onrender.com/api/analyze-job', {
+      const analyzeResponse = await fetch('http://localhost:3001/api/analyze-job', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -356,10 +382,18 @@ if (!analyzeResponse.ok) {
   return
 }
 
+console.log("企業名チェック:", analyzedJob.companyName)
+const fallbackCompanyName =
+  analyzedJob.companyName ||
+  analyzedJob.companyInfo?.match(/企業名[:：]\s*([^\n*]+)/)?.[1]?.trim() ||
+  ''
 setProfile((prev) => ({
   ...prev,
   companyInfo: analyzedJob.companyInfo,
+companyName: fallbackCompanyName || prev.companyName,
+company: fallbackCompanyName || prev.company,
 }))
+console.log("企業名:", analyzedJob.companyName)
 
 alert('求人票の内容を企業情報に反映しました！')
       
@@ -474,6 +508,13 @@ const styles = {
     borderRadius: '10px',
     fontSize: '18px',
     cursor: 'pointer',
+  },companyCard: {
+    background: '#f0f7ff',
+    border: '1px solid #dbeafe',
+    borderRadius: '12px',
+    padding: '20px',
+    margin: '20px 0 30px 0',
+    textAlign: 'center',
   },
 }
 
