@@ -123,7 +123,7 @@ const [history, setHistory] = useState([])
       setQuestion(text)
 
       try {
-        const response = await fetch('==> Available at your primary URL https://interview-ai-ycc4.onrender.com/api/interview', {
+        const response = await fetch('https://interview-ai-ycc4.onrender.com/api/interview', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
